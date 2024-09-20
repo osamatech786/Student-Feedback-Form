@@ -203,6 +203,8 @@ def send_email(file_path):
 
 # Streamlit form for user input with `key` to store values in session state
 st.title("Student Feedback Form")
+st.write("________________________________________")
+st.write("Thank you for taking the time to provide feedback on your experience with Prevista Ltd's course selection process, course guidance, and job application support services. Your input helps us improve the quality of our offerings and better support you in reaching your career goals. Please take a few minutes to fill out the form below.")
 
 # Feedback form fields with `key` for session state
 st.subheader("1. Course Name")

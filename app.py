@@ -195,9 +195,6 @@ def send_email(file_path):
     except smtplib.SMTPException as smtp_error:
         st.error(f"SMTP error occurred: {smtp_error}")
 
-    except FileNotFoundError as file_error:
-        st.error(f"Error with file handling: {file_error}")
-
     except Exception as e:
         st.error(f"An error occurred while sending the email: {e}")
 
@@ -309,8 +306,19 @@ if st.button("Submit", key="submit_button", disabled=st.session_state.submission
 
 if st.session_state.submission_status:
     st.success(f"Feedback form submitted and sent to {st.secrets['sender_email']}.")
+    try:
+        # file download button
+        with open(filled_doc_path, 'rb') as f:
+            file_contents = f.read()
+            st.download_button(
+                label="Download Your Response",
+                data=file_contents,
+                file_name=filled_doc_path,
+                mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            )    
     # download button
-
+    except FileNotFoundError as file_error:
+        st.error(f"Error with file handling: {file_error}")
 
 # streamlit run app.py
 # Dev : https://linkedin.com/in/osamatech786

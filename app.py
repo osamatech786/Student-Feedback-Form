@@ -14,6 +14,8 @@ st.set_page_config(
     layout="centered"
 )
 
+if 'submission_status' not in st.session_state: st.session_state.submission_status = False
+
 # Function to generate a unique ID using the UUID API
 def generate_unique_id():
     try:
@@ -266,40 +268,50 @@ other_comments = st.text_area("Any other comments or suggestions?", key="other_c
 
 
 # Submit button
-if st.button("Submit", key="submit_button"):
-    try:
-        # Validate form inputs
-        if not course_name :
-            st.error("Please fill in all required fields, including course name and recipient email.")
-        else:
-            # Collect form data from session state
-            form_data = {
-                'course_name': st.session_state.course_name,
-                'course_selection_feedback': st.session_state.course_selection_feedback,
-                'course_info_clarity': st.session_state.course_info_clarity,
-                'course_selection_suggestions': st.session_state.course_selection_suggestions,
-                'course_guidance_rating': st.session_state.course_guidance_rating,
-                'course_delivery_satisfaction': st.session_state.course_delivery_satisfaction,
-                'course_content_relevance': st.session_state.course_content_relevance,
-                'course_guidance_suggestions': st.session_state.course_guidance_suggestions,
-                'job_guidance_satisfaction': st.session_state.job_guidance_satisfaction,
-                'job_application_helpfulness': st.session_state.job_application_helpfulness,
-                'interview_preparation_support': st.session_state.interview_preparation_support,
-                'job_guidance_suggestions': st.session_state.job_guidance_suggestions,
-                'most_helpful_service': st.session_state.most_helpful_service,
-                'areas_for_improvement': st.session_state.areas_for_improvement,
-                'other_comments': st.session_state.other_comments,
-            }
+if st.button("Submit", key="submit_button", disabled=st.session_state.submission_status):
+    with st.spinner('Processing...'):
+        try:
+            # Validate form inputs
+            if not course_name :
+                st.error("Please fill in all required fields, including course name and recipient email.")
+            else:
+                # Collect form data from session state
+                form_data = {
+                    'course_name': st.session_state.course_name,
+                    'course_selection_feedback': st.session_state.course_selection_feedback,
+                    'course_info_clarity': st.session_state.course_info_clarity,
+                    'course_selection_suggestions': st.session_state.course_selection_suggestions,
+                    'course_guidance_rating': st.session_state.course_guidance_rating,
+                    'course_delivery_satisfaction': st.session_state.course_delivery_satisfaction,
+                    'course_content_relevance': st.session_state.course_content_relevance,
+                    'course_guidance_suggestions': st.session_state.course_guidance_suggestions,
+                    'job_guidance_satisfaction': st.session_state.job_guidance_satisfaction,
+                    'job_application_helpfulness': st.session_state.job_application_helpfulness,
+                    'interview_preparation_support': st.session_state.interview_preparation_support,
+                    'job_guidance_suggestions': st.session_state.job_guidance_suggestions,
+                    'most_helpful_service': st.session_state.most_helpful_service,
+                    'areas_for_improvement': st.session_state.areas_for_improvement,
+                    'other_comments': st.session_state.other_comments,
+                }
 
-            # Path to the Word template document
-            template_path = "resource/ph_feedback_form.docx"  # Correct path
+                # Path to the Word template document
+                template_path = "resource/ph_feedback_form.docx"  # Correct path
 
-            # Populate the document
-            filled_doc_path = populate_document(form_data, template_path)
+                # Populate the document
+                filled_doc_path = populate_document(form_data, template_path)
 
-            # Send the document via email
-            if filled_doc_path:
-                send_email(filled_doc_path)
+                # Send the document via email
+                if filled_doc_path:
+                    send_email(filled_doc_path)
+                    st.session_state.submission_status = True
+                    st.experimental_rerun()                    
 
-    except Exception as e:
-        st.error(f"An unexpected error occurred: {e}")
+        except Exception as e:
+            st.error(f"An unexpected error occurred: {e}")
+
+# if st.session_state.submission_status:
+#     st.success("Thank you for taking the time to provide feedback.")
+    # download button
+
+# streamlit run app.py
+# Dev : https://linkedin.com/in/osamatech786

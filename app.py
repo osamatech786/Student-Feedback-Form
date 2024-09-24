@@ -158,6 +158,8 @@ def populate_document(data, template_path, save_directory="/"):
 # Function to send the document via Outlook
 def send_email(file_path):
     try:
+        # sender_email = 'email'
+        # password = 'pass'
         sender_email = st.secrets["sender_email"]
         password = st.secrets["sender_password"]
         receiver_email=sender_email
@@ -297,28 +299,33 @@ if st.button("Submit", key="submit_button", disabled=st.session_state.submission
 
                 # Send the document via email
                 if filled_doc_path:
-                    send_email(filled_doc_path)
-                    st.session_state.submission_status = True
-                    st.experimental_rerun()                    
+                    # download button
+                    try:
+                        send_email(filled_doc_path)
 
+                        st.session_state.submission_status = True
+                        # st.experimental_rerun()  
+
+                        # file download button
+                        with open(filled_doc_path, 'rb') as f:
+                            file_contents = f.read()
+                            st.download_button(
+                                label="Download Your Response",
+                                data=file_contents,
+                                file_name=filled_doc_path,
+                                mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                            )    
+
+                    except FileNotFoundError as file_error:
+                        st.error(f"Error with file handling: {file_error}")
+                
         except Exception as e:
             st.error(f"An unexpected error occurred: {e}")
 
 if st.session_state.submission_status:
     st.success(f"Feedback form submitted and sent to {st.secrets['sender_email']}.")
-    try:
-        # file download button
-        with open(filled_doc_path, 'rb') as f:
-            file_contents = f.read()
-            st.download_button(
-                label="Download Your Response",
-                data=file_contents,
-                file_name=filled_doc_path,
-                mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-            )    
-    # download button
-    except FileNotFoundError as file_error:
-        st.error(f"Error with file handling: {file_error}")
+    pass
+
 
 # streamlit run app.py
 # Dev : https://linkedin.com/in/osamatech786

@@ -308,7 +308,7 @@ if st.button("Submit", key="submit_button", disabled=st.session_state.submission
             st.error(f"An unexpected error occurred: {e}")
 
 if st.session_state.submission_status:
-    st.success(f"Feedback form submitted and sent to {receiver_email}.")
+    st.success(f"Feedback form submitted and sent to {st.secrets["sender_email"]}.")
     # download button
 
 

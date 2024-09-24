@@ -192,8 +192,6 @@ def send_email(file_path):
         server.sendmail(sender_email, receiver_email, msg.as_string())
         server.quit()
 
-        st.success(f"Feedback form submitted and sent to {receiver_email}.")
-
     except smtplib.SMTPException as smtp_error:
         st.error(f"SMTP error occurred: {smtp_error}")
 
@@ -309,9 +307,10 @@ if st.button("Submit", key="submit_button", disabled=st.session_state.submission
         except Exception as e:
             st.error(f"An unexpected error occurred: {e}")
 
-# if st.session_state.submission_status:
-#     st.success("Thank you for taking the time to provide feedback.")
+if st.session_state.submission_status:
+    st.success(f"Feedback form submitted and sent to {receiver_email}.")
     # download button
+
 
 # streamlit run app.py
 # Dev : https://linkedin.com/in/osamatech786
